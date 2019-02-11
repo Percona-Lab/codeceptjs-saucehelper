@@ -1,0 +1,17 @@
+{
+  "name": "codeceptjs-saucehelper",
+  "version": "1.2.0",
+  "description": "Sauce Labs Result Publisher for Codecept JS tests",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:Percona-Lab/codeceptjs-saucehelper.git"
+  },
+  "keywords": [
+    "codeceptJS",
+    "codeceptjs",
+    "saucelabs",
+    "codeceptjs-saucelabs"
+  ],
+  "author": "Puneet Kala <puneet.kala@percona.com>",
+  "license": "MIT"
+}
