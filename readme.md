@@ -15,9 +15,11 @@ Example:
 ```json
 {
    "helpers": {
-     "SauceHelper" : {
-       "require": "codeceptjs-saucehelper"
-     }
+     "SauceHelper": {
+      "require": "codeceptjs-saucehelper",
+      "user": "SAUCE_USER",
+      "key": "SAUCE_KEY"
+    },
    }
 }
 ```
