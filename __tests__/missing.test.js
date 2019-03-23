@@ -14,8 +14,6 @@ describe("Appium helper", () => {
             require: "codeceptjs-saucehelper",
             key
         });
-
-        helper.helpers = {};
     });
 
     it("throws an error on test passing", () => {

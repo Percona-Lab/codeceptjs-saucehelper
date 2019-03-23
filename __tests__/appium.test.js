@@ -26,7 +26,7 @@ describe("Appium helper", () => {
             key
         });
 
-        helper.helpers = { Appium: { browser: { sessionId: session } } };
+        helper.helpers.Appium = { browser: { sessionId: session } };
     });
 
     it("makes an appropriate call on test passing", (done) => {

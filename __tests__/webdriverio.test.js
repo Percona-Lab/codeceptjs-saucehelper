@@ -26,8 +26,8 @@ describe("WebDriverIO helper", () => {
             key
         });
 
-        helper.helpers = {
-            WebDriverIO: { browser: { requestHandler: { sessionID: session } } }
+        helper.helpers.WebDriverIO = {
+            browser: { requestHandler: { sessionID: session } }
         };
     });
 

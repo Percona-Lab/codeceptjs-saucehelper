@@ -26,7 +26,7 @@ describe("WebDriver helper", () => {
             key
         });
 
-        helper.helpers = { WebDriver: { browser: { sessionId: session } } };
+        helper.helpers.WebDriver = { browser: { sessionId: session } };
     });
 
     it("makes an appropriate call on test passing", (done) => {

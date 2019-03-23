@@ -29,10 +29,11 @@
   },
   "jest": {
     "setupFilesAfterEnv": [
-      "<rootDir>/setupTests.js"
+      "<rootDir>/__tests__/setupTests.js"
     ],
     "testPathIgnorePatterns": [
-      ".eslintrc.js"
+      ".eslintrc.js",
+      "setupTests.js"
     ]
   },
   "license": "MIT"
