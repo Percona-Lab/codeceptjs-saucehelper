@@ -15,7 +15,10 @@ describe("Appium helper", () => {
 
     beforeEach(() => {
         nock.disableNetConnect();
-        sauceApi = nock("https://saucelabs.com/rest/v1");
+        sauceApi = nock("https://saucelabs.com/rest/v1").matchHeader(
+            "authorization",
+            "Basic c2F1Y2V0ZXN0dXNlcjowMTIzNDU2Ny04OWFiLWNkZWYtMDEyMy00NTY3ODlhYmNkZWY="
+        );
 
         helper = new SauceHelper({
             user,
@@ -27,12 +30,12 @@ describe("Appium helper", () => {
     });
 
     it("makes an appropriate call on test passing", (done) => {
-        sauceApi.
-            put(`/${user}/jobs/${session}`, {
+        sauceApi
+            .put(`/${user}/jobs/${session}`, {
                 passed: true,
                 name: title
-            }).
-            reply(200, {});
+            })
+            .reply(200, {});
         helper._passed({ title });
         setTimeout(() => {
             sauceApi.done();
@@ -41,12 +44,12 @@ describe("Appium helper", () => {
     });
 
     it("makes an appropriate call on test failing", (done) => {
-        sauceApi.
-            put(`/${user}/jobs/0123456789abcdef0123456789abcdef`, {
+        sauceApi
+            .put(`/${user}/jobs/${session}`, {
                 passed: false,
                 name: title
-            }).
-            reply(200, {});
+            })
+            .reply(200, {});
         helper._failed({ title });
         setTimeout(() => {
             sauceApi.done();
