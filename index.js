@@ -12,7 +12,6 @@ class SauceHelper extends Helper {
 
     /**
      *
-     * @param sessionId Session ID for current Test browser session
      * @param data      Test name, etc
      * @private
      */
@@ -24,21 +23,9 @@ class SauceHelper extends Helper {
 
         const config = this._getConfig();
 
-        var status_url = "https://saucelabs.com/rest/v1/";
-        status_url = status_url.concat(config.user);
-        status_url = status_url.concat("/jobs/");
-        status_url = status_url.concat(this._getSessionId());
-
-        return restHelper.sendPutRequest(status_url, data, {
-            Authorization: this._createAuthHeader(config.user, config.key)
+        return restHelper.sendPutRequest(this._createStatusUrl(config), data, {
+            Authorization: this._createAuthHeader(config)
         });
-    }
-
-    _createAuthHeader(user, key) {
-        var credentials = user;
-        credentials = credentials.concat(":");
-        credentials = credentials.concat(key);
-        return "Basic ".concat(Buffer.from(credentials).toString("base64"));
     }
 
     /**
@@ -58,6 +45,23 @@ class SauceHelper extends Helper {
      */
     _failed(test, error) {
         return this._updateSauceJob({ passed: false, name: test.title });
+    }
+
+    _createAuthHeader(config) {
+        var credentials = config.user;
+        credentials = credentials.concat(":");
+        credentials = credentials.concat(config.key);
+        return "Basic ".concat(Buffer.from(credentials).toString("base64"));
+    }
+
+    _createStatusUrl(config) {
+        var status_url = "https://saucelabs.com/rest/v1/";
+        if (config.region === "eu") {
+            status_url = "https://eu-central-1.saucelabs.com/rest/v1/";
+        }
+        status_url = status_url.concat(config.user);
+        status_url = status_url.concat("/jobs/");
+        return status_url.concat(this._getSessionId());
     }
 
     _getConfig() {
