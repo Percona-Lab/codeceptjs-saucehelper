@@ -2,7 +2,7 @@
 
 const SauceHelper = require("../index");
 
-describe("Appium helper", () => {
+describe("Unknown helper", () => {
     const key = "01234567-89ab-cdef-0123-456789abcdef";
     const user = "saucetestuser";
 
