@@ -6,7 +6,6 @@
  * @author Puneet Kala
  */
 class SauceHelper extends Helper {
-
     constructor(config) {
         super(config);
     }
@@ -17,26 +16,28 @@ class SauceHelper extends Helper {
      * @param data      Test name, etc
      * @private
      */
-    _updateSauceJob(sessionId, data) {
+    _updateSauceJob(data) {
         const restHelper = this.helpers["REST"];
         if (!restHelper) {
             throw new Error("REST helper must be enabled, add REST: {} to helpers config");
         }
 
+        const config = this._getConfig();
+
         var status_url = "https://saucelabs.com/rest/v1/";
-        status_url = status_url.concat(this.config.user);
+        status_url = status_url.concat(config.user);
         status_url = status_url.concat("/jobs/");
-        status_url = status_url.concat(sessionId);
+        status_url = status_url.concat(this._getSessionId());
 
         return restHelper.sendPutRequest(status_url, data, {
-            Authorization: this._createAuthHeader()
+            Authorization: this._createAuthHeader(config.user, config.key)
         });
     }
 
-    _createAuthHeader() {
-        var credentials = this.config.user;
+    _createAuthHeader(user, key) {
+        var credentials = user;
         credentials = credentials.concat(":");
-        credentials = credentials.concat(this.config.key);
+        credentials = credentials.concat(key);
         return "Basic ".concat(Buffer.from(credentials).toString("base64"));
     }
 
@@ -46,8 +47,7 @@ class SauceHelper extends Helper {
      * @private
      */
     _passed(test) {
-        const sessionId = this._getSessionId();
-        return this._updateSauceJob(sessionId, { passed: true, name: test.title });
+        return this._updateSauceJob({ passed: true, name: test.title });
     }
 
     /**
@@ -57,8 +57,20 @@ class SauceHelper extends Helper {
      * @private
      */
     _failed(test, error) {
-        const sessionId = this._getSessionId();
-        return this._updateSauceJob(sessionId, { passed: false, name: test.title });
+        return this._updateSauceJob({ passed: false, name: test.title });
+    }
+
+    _getConfig() {
+        if (this.helpers["WebDriver"]) {
+            return this.helpers["WebDriver"].config;
+        }
+        if (this.helpers["Appium"]) {
+            return this.helpers["Appium"].config;
+        }
+        if (this.helpers["WebDriverIO"]) {
+            return this.helpers["WebDriverIO"].config;
+        }
+        throw new Error("No matching helper found. Supported helpers: WebDriver/Appium/WebDriverIO");
     }
 
     _getSessionId() {

@@ -16,11 +16,8 @@ Example:
 {
    "helpers": {
      "SauceHelper": {
-      "require": "codeceptjs-saucehelper",
-      "user": "SAUCE_USER",
-      "key": "SAUCE_KEY"
+      "require": "codeceptjs-saucehelper"
     },
    }
 }
 ```
-To use the Helper, Users must provide the Sauce User, Sauce Key & Host as part of the configuration.

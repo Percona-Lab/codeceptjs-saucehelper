@@ -4,11 +4,7 @@ const SauceHelper = require("../index");
 
 describe("No REST helper", () => {
     it("tells the user to enable REST", () => {
-        const helper = new SauceHelper({
-            user: "",
-            require: "codeceptjs-saucehelper",
-            key: ""
-        });
+        const helper = new SauceHelper({ require: "codeceptjs-saucehelper" });
         helper.helpers = {
             WebDriver: { browser: {} }
         };

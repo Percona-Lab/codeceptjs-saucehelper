@@ -3,17 +3,10 @@
 const SauceHelper = require("../index");
 
 describe("Unknown helper", () => {
-    const key = "01234567-89ab-cdef-0123-456789abcdef";
-    const user = "saucetestuser";
-
     let helper;
 
     beforeEach(() => {
-        helper = new SauceHelper({
-            user,
-            require: "codeceptjs-saucehelper",
-            key
-        });
+        helper = new SauceHelper({ require: "codeceptjs-saucehelper" });
     });
 
     it("throws an error on test passing", () => {

@@ -21,13 +21,12 @@ describe("WebDriver helper", () => {
         });
         sauceApi.options(`/${user}/jobs/${session}`).reply(200);
 
-        helper = new SauceHelper({
-            user,
-            require: "codeceptjs-saucehelper",
-            key
-        });
+        helper = new SauceHelper({ require: "codeceptjs-saucehelper" });
 
-        helper.helpers.WebDriver = { browser: { sessionId: session } };
+        helper.helpers.WebDriver = {
+            config: { user, key },
+            browser: { sessionId: session }
+        };
     });
 
     it("makes an appropriate call on test passing", () => {
