@@ -1,5 +1,7 @@
 "use strict";
 
+const codeceptjs = require("codeceptjs");
+
 /**
  * Sauce Labs Helper for Codeceptjs
  *
@@ -21,11 +23,18 @@ class SauceHelper extends Helper {
             throw new Error("REST helper must be enabled, add REST: {} to helpers config");
         }
 
+        const sessionId = this._getSessionId();
         const config = this._getConfig();
 
-        return restHelper.sendPutRequest(this._createStatusUrl(config), data, {
-            Authorization: this._createAuthHeader(config)
-        });
+        let sauce_url = "Test finished. Link to job: https://saucelabs.com/jobs/";
+        sauce_url = sauce_url.concat(sessionId);
+        codeceptjs.output.log(sauce_url);
+
+        return restHelper.sendPutRequest(
+            this._createStatusUrl(config, sessionId),
+            data,
+            { Authorization: this._createAuthHeader(config) }
+        );
     }
 
     /**
@@ -48,20 +57,20 @@ class SauceHelper extends Helper {
     }
 
     _createAuthHeader(config) {
-        var credentials = config.user;
+        let credentials = config.user;
         credentials = credentials.concat(":");
         credentials = credentials.concat(config.key);
         return "Basic ".concat(Buffer.from(credentials).toString("base64"));
     }
 
-    _createStatusUrl(config) {
-        var status_url = "https://saucelabs.com/rest/v1/";
+    _createStatusUrl(config, sessionId) {
+        let status_url = "https://saucelabs.com/rest/v1/";
         if (config.region === "eu") {
             status_url = "https://eu-central-1.saucelabs.com/rest/v1/";
         }
         status_url = status_url.concat(config.user);
         status_url = status_url.concat("/jobs/");
-        return status_url.concat(this._getSessionId());
+        return status_url.concat(sessionId);
     }
 
     _getConfig() {
