@@ -15,10 +15,11 @@ describe("WebDriver helper", () => {
 
     beforeEach(() => {
         nock.disableNetConnect();
-        sauceApi = nock("https://saucelabs.com/rest/v1").matchHeader(
-            "authorization",
-            "Basic c2F1Y2V0ZXN0dXNlcjowMTIzNDU2Ny04OWFiLWNkZWYtMDEyMy00NTY3ODlhYmNkZWY="
-        );
+        sauceApi = nock("https://saucelabs.com/rest/v1").defaultReplyHeaders({
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Headers": "Authorization"
+        });
+        sauceApi.options(`/${user}/jobs/${session}`).reply(200);
 
         helper = new SauceHelper({
             user,
@@ -29,31 +30,33 @@ describe("WebDriver helper", () => {
         helper.helpers.WebDriver = { browser: { sessionId: session } };
     });
 
-    it("makes an appropriate call on test passing", (done) => {
+    it("makes an appropriate call on test passing", () => {
         sauceApi
             .put(`/${user}/jobs/${session}`, {
                 passed: true,
                 name: title
             })
+            .matchHeader(
+                "authorization",
+                "Basic c2F1Y2V0ZXN0dXNlcjowMTIzNDU2Ny04OWFiLWNkZWYtMDEyMy00NTY3ODlhYmNkZWY="
+            )
             .reply(200, {});
-        helper._passed({ title });
-        setTimeout(() => {
-            sauceApi.done();
-            done();
-        }, 250);
+
+        return helper._passed({ title }).then(() => sauceApi.done());
     });
 
-    it("makes an appropriate call on test failing", (done) => {
+    it("makes an appropriate call on test failing", () => {
         sauceApi
             .put(`/${user}/jobs/${session}`, {
                 passed: false,
                 name: title
             })
+            .matchHeader(
+                "authorization",
+                "Basic c2F1Y2V0ZXN0dXNlcjowMTIzNDU2Ny04OWFiLWNkZWYtMDEyMy00NTY3ODlhYmNkZWY="
+            )
             .reply(200, {});
-        helper._failed({ title });
-        setTimeout(() => {
-            sauceApi.done();
-            done();
-        }, 250);
+
+        return helper._failed({ title }).then(() => sauceApi.done());
     });
 });

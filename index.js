@@ -1,8 +1,5 @@
 'use strict';
 
-// use any assertion library you like
-let request = require('request');
-
 /**
  * Sauce Labs Helper for Codeceptjs
  *
@@ -32,20 +29,18 @@ class SauceHelper extends Helper {
         status_url = status_url.concat(sessionId);
 
         console.log(this.config.user);
-        request({ url: status_url, method: 'PUT', json: data, auth: {'user': this.config.user, 'pass': this.config.key}}, this._callback);
+        return this.helpers["REST"].sendPutRequest(
+            status_url,
+            data,
+            { Authorization: this._createAuthHeader() }
+        );
     }
 
-    /**
-     * Request call back function
-     * @param error
-     * @param response
-     * @param body
-     * @private
-     */
-    _callback(error, response, body) {
-        if (!error && response.statusCode == 200) {
-            console.log(body);
-        }
+    _createAuthHeader() {
+        var credentials = this.config.user;
+        credentials = credentials.concat(":");
+        credentials = credentials.concat(this.config.key);
+        return "Basic ".concat(Buffer.from(credentials).toString("base64"));
     }
 
     /**
@@ -56,7 +51,7 @@ class SauceHelper extends Helper {
     _passed (test) {
         console.log ("Test has Passed");
         const sessionId = this._getSessionId();
-        this._updateSauceJob(sessionId, {"passed": true, "name": test.title});
+        return this._updateSauceJob(sessionId, {"passed": true, "name": test.title});
     }
 
     /**
@@ -68,7 +63,7 @@ class SauceHelper extends Helper {
     _failed (test, error) {
         console.log ("Test has failed");
         const sessionId = this._getSessionId();
-        this._updateSauceJob(sessionId, {"passed": false, "name": test.title});
+        return this._updateSauceJob(sessionId, {"passed": false, "name": test.title});
     }
     
     _getSessionId() {
