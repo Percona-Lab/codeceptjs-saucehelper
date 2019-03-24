@@ -28,7 +28,7 @@ class SauceHelper extends Helper {
 
         let sauce_url = "Test finished. Link to job: https://saucelabs.com/jobs/";
         sauce_url = sauce_url.concat(sessionId);
-        codeceptjs.output.log(sauce_url);
+        codeceptjs.output.say(sauce_url);
 
         return restHelper.sendPutRequest(
             this._createStatusUrl(config, sessionId),

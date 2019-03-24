@@ -45,7 +45,7 @@ describe("logging", () => {
             .reply(200, {});
 
         return helper._passed({ title }).then(() => {
-            expect(codeceptjs.output.log).toHaveBeenCalledWith(`Test finished. Link to job: https://saucelabs.com/jobs/${session}`);
+            expect(codeceptjs.output.say).toHaveBeenCalledWith(`Test finished. Link to job: https://saucelabs.com/jobs/${session}`);
         });
     });
 });
