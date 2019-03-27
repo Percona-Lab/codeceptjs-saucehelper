@@ -21,3 +21,11 @@ Example:
    }
 }
 ```
+
+Your Sauce Labs user and key are now accessed from the WebDriver/Appium configuration to minimise duplication.
+
+### Development
+
+Code quality and functionality are checked with ESlint (`npm run lint`) and Jest (`npm run test`). The tests use [`nock`][1] to check that appropriate requests are made to the Sauce Labs API given the configuration and the outcome of the test.
+
+  [1]: https://www.npmjs.com/package/nock
