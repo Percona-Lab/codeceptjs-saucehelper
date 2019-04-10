@@ -13,5 +13,31 @@
     "codeceptjs-saucelabs"
   ],
   "author": "Puneet Kala <puneet.kala@percona.com>",
+  "contributors": [
+    "Jonathan Sharpe <mail@jonrshar.pe>"
+  ],
+  "scripts": {
+    "lint": "eslint .",
+    "test": "jest"
+  },
+  "devDependencies": {
+    "eslint": "^5.15.3",
+    "eslint-plugin-codeceptjs": "^0.4.0",
+    "eslint-plugin-jest": "^22.4.1",
+    "jest": "^24.5.0",
+    "nock": "^10.0.6"
+  },
+  "peerDependencies": {
+    "codeceptjs": "*"
+  },
+  "jest": {
+    "setupFilesAfterEnv": [
+      "<rootDir>/__tests__/setupTests.js"
+    ],
+    "testPathIgnorePatterns": [
+      ".eslintrc.js",
+      "setupTests.js"
+    ]
+  },
   "license": "MIT"
 }
