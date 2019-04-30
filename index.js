@@ -1,6 +1,7 @@
-"use strict";
+'use strict';
 
-const codeceptjs = require("codeceptjs");
+// use any assertion library you like
+let request = require('request');
 
 /**
  * Sauce Labs Helper for Codeceptjs
@@ -8,33 +9,52 @@ const codeceptjs = require("codeceptjs");
  * @author Puneet Kala
  */
 class SauceHelper extends Helper {
+
     constructor(config) {
         super(config);
     }
 
     /**
      *
+     * @param sessionId Session ID for current Test browser session
      * @param data      Test name, etc
      * @private
      */
-    _updateSauceJob(data) {
-        const restHelper = this.helpers["REST"];
-        if (!restHelper) {
-            throw new Error("REST helper must be enabled, add REST: {} to helpers config");
+    _updateSauceJob(sessionId, data) {
+        var sauce_url = "Test finished. Link to job: https://saucelabs.com/jobs/";
+        sauce_url = sauce_url.concat(sessionId);
+
+        if (!this.config.silent) {
+            console.log(sauce_url);
         }
 
-        const sessionId = this._getSessionId();
-        const config = this._getConfig();
+        var status_url = 'https://saucelabs.com/rest/v1/';
+        status_url = status_url.concat(this.config.user);
+        status_url = status_url.concat('/jobs/');
+        status_url = status_url.concat(sessionId);
 
-        let sauce_url = "Test finished. Link to job: https://saucelabs.com/jobs/";
-        sauce_url = sauce_url.concat(sessionId);
-        codeceptjs.output.say(sauce_url);
+        if (!this.config.silent) {
+            console.log(this.config.user);
+        }
 
-        return restHelper.sendPutRequest(
-            this._createStatusUrl(config, sessionId),
-            data,
-            { Authorization: this._createAuthHeader(config) }
-        );
+        request({ url: status_url, method: 'PUT', json: data, auth: {'user': this.config.user, 'pass': this.config.key}}, (err, res, body) => {
+            this._callback(err, res, body, this.config);
+        });
+    }
+
+    /**
+     * Request call back function
+     * @param error
+     * @param response
+     * @param body
+     * @private
+     */
+    _callback(error, response, body, config) {
+        if (!error && response.statusCode == 200) {
+            if (!config.silent) {
+                console.log(body);
+            }
+        }
     }
 
     /**
@@ -42,8 +62,13 @@ class SauceHelper extends Helper {
      * @param test
      * @private
      */
-    _passed(test) {
-        return this._updateSauceJob({ passed: true, name: test.title });
+    _passed (test) {
+        if (!this.config.silent) {
+            console.log ("Test has Passed");
+        }
+
+        const sessionId = this._getSessionId();
+        this._updateSauceJob(sessionId, {"passed": true, "name": test.title});
     }
 
     /**
@@ -52,51 +77,26 @@ class SauceHelper extends Helper {
      * @param error
      * @private
      */
-    _failed(test, error) {
-        return this._updateSauceJob({ passed: false, name: test.title });
-    }
+    _failed (test, error) {
+        if (!this.config.silent) {
+            console.log ("Test has failed");
+        }
 
-    _createAuthHeader(config) {
-        let credentials = config.user;
-        credentials = credentials.concat(":");
-        credentials = credentials.concat(config.key);
-        return "Basic ".concat(Buffer.from(credentials).toString("base64"));
-    }
-
-    _createStatusUrl(config, sessionId) {
-        let status_url = "https://saucelabs.com/rest/v1/";
-        if (config.region === "eu") {
-            status_url = "https://eu-central-1.saucelabs.com/rest/v1/";
-        }
-        status_url = status_url.concat(config.user);
-        status_url = status_url.concat("/jobs/");
-        return status_url.concat(sessionId);
-    }
-
-    _getConfig() {
-        if (this.helpers["WebDriver"]) {
-            return this.helpers["WebDriver"].config;
-        }
-        if (this.helpers["Appium"]) {
-            return this.helpers["Appium"].config;
-        }
-        if (this.helpers["WebDriverIO"]) {
-            return this.helpers["WebDriverIO"].config;
-        }
-        throw new Error("No matching helper found. Supported helpers: WebDriver/Appium/WebDriverIO");
+        const sessionId = this._getSessionId();
+        this._updateSauceJob(sessionId, {"passed": false, "name": test.title});
     }
 
     _getSessionId() {
-        if (this.helpers["WebDriver"]) {
-            return this.helpers["WebDriver"].browser.sessionId;
+        if (this.helpers['WebDriver']) {
+            return this.helpers['WebDriver'].browser.sessionId;
         }
-        if (this.helpers["Appium"]) {
-            return this.helpers["Appium"].browser.sessionId;
+        if (this.helpers['Appium']) {
+            return this.helpers['Appium'].browser.sessionId;
         }
-        if (this.helpers["WebDriverIO"]) {
-            return this.helpers["WebDriverIO"].browser.requestHandler.sessionID;
+        if (this.helpers['WebDriverIO']) {
+            return this.helpers['WebDriverIO'].browser.requestHandler.sessionID;
         }
-        throw new Error("No matching helper found. Supported helpers: WebDriver/Appium/WebDriverIO");
+        throw new Error('No matching helper found. Supported helpers: WebDriver/Appium/WebDriverIO');
     }
 }
 
