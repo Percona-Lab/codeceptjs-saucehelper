@@ -1,6 +1,6 @@
 {
   "name": "codeceptjs-saucehelper",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "Sauce Labs Result Publisher for Codecept JS tests",
   "repository": {
     "type": "git",
