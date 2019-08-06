@@ -14,11 +14,25 @@ class SauceHelper extends Helper {
 
     /**
      *
+     * @param test
+     * @private
+     * @author Kushang Gajjar
+     */
+    _before(test) {
+        return this._updateSauceJob({
+            tags: test.tags,
+            name: test.title,
+            build: test.build || process.env.SAUCE_BUILD
+        });
+    }
+
+    /**
+     *
      * @param data      Test name, etc
      * @private
      */
     _updateSauceJob(data) {
-        const restHelper = this.helpers["REST"];
+        const restHelper = this.helpers.REST;
         if (!restHelper) {
             throw new Error("REST helper must be enabled, add REST: {} to helpers config");
         }
@@ -43,7 +57,7 @@ class SauceHelper extends Helper {
      * @private
      */
     _passed(test) {
-        return this._updateSauceJob({ passed: true, name: test.title });
+        return this._updateSauceJob({ passed: true });
     }
 
     /**
@@ -53,7 +67,7 @@ class SauceHelper extends Helper {
      * @private
      */
     _failed(test, error) {
-        return this._updateSauceJob({ passed: false, name: test.title });
+        return this._updateSauceJob({ passed: false });
     }
 
     _createAuthHeader(config) {
@@ -74,27 +88,27 @@ class SauceHelper extends Helper {
     }
 
     _getConfig() {
-        if (this.helpers["WebDriver"]) {
-            return this.helpers["WebDriver"].config;
+        if (this.helpers.WebDriver) {
+            return this.helpers.WebDriver.config;
         }
-        if (this.helpers["Appium"]) {
-            return this.helpers["Appium"].config;
+        if (this.helpers.Appium) {
+            return this.helpers.Appium.config;
         }
-        if (this.helpers["WebDriverIO"]) {
-            return this.helpers["WebDriverIO"].config;
+        if (this.helpers.WebDriverIO) {
+            return this.helpers.WebDriverIO.config;
         }
         throw new Error("No matching helper found. Supported helpers: WebDriver/Appium/WebDriverIO");
     }
 
     _getSessionId() {
-        if (this.helpers["WebDriver"]) {
-            return this.helpers["WebDriver"].browser.sessionId;
+        if (this.helpers.WebDriver) {
+            return this.helpers.WebDriver.browser.sessionId;
         }
-        if (this.helpers["Appium"]) {
-            return this.helpers["Appium"].browser.sessionId;
+        if (this.helpers.Appium) {
+            return this.helpers.Appium.browser.sessionId;
         }
-        if (this.helpers["WebDriverIO"]) {
-            return this.helpers["WebDriverIO"].browser.requestHandler.sessionID;
+        if (this.helpers.WebDriverIO) {
+            return this.helpers.WebDriverIO.browser.requestHandler.sessionID;
         }
         throw new Error("No matching helper found. Supported helpers: WebDriver/Appium/WebDriverIO");
     }
