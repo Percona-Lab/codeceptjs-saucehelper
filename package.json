@@ -14,7 +14,15 @@
   ],
   "author": "Puneet Kala <puneet.kala@percona.com>",
   "contributors": [
-    "Jonathan Sharpe <mail@jonrshar.pe>"
+    {
+      "name": "Jonathan Sharpe",
+      "email": "mail@jonrshar.pe"
+    },
+    {
+      "name": "Kushang Gajjar",
+      "url": "https://github.com/gkushang",
+      "email": "g.kushang@gmail.com"
+    }
   ],
   "scripts": {
     "lint": "eslint .",

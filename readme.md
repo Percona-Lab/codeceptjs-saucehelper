@@ -21,8 +21,19 @@ Example:
    }
 }
 ```
-
 Your Sauce Labs user and key are now accessed from the WebDriver/Appium configuration to minimise duplication.
+
+### SauceLabs Automated Build Dashboard
+
+To create SauceLabs Automated Build dashboard, you'd need to pass the unique `build` id. You can pass the unique `build` through process environment variable,
+
+```bash
+
+    $ SAUCE_BUILD=<your_build> <test_command>
+    
+```
+
+e.g. SAUCE_BUILD=`'date'`
 
 ### Development
 
